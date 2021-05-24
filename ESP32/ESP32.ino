@@ -23,10 +23,10 @@ const char* password = "";  //Enter your Password here
 
 WebServer server(80);  // Object of WebServer(HTTP port, 80 is defult)
 
-uint8_t suma;
+uint8_t TOTAL;
 unsigned char VAR;
-String disponible = "\t  <td  style=\"background-color: #5BB564;\"> <h2>Disponible &#128513</h2> </td>\t\n";
-String ocupado = "\t  <td  style=\"background-color: #E64545;\"><h2>Ocupado &#128546</h2></td>\t\n";
+String Ocupado = "\t  <td  style=\"background-color: #e0120b;\"><h2>Ocupado</h2></td>\t\n";
+String Vacio = "\t  <td  style=\"background-color: #3fb528;\"> <h2>Vacio</h2> </td>\t\n";
 
 //************************************************************************************************
 // Configuración
@@ -37,10 +37,10 @@ void setup() {
   Serial2.begin(115200, SERIAL_8N1, 16, 17);
   while (! Serial2);
 
-  Serial.println("Try Connecting to ");
+  Serial.println("Connecting to ");
   Serial.println(ssid);
 
-  pinMode(LED1pin, OUTPUT);
+//  pinMode(LED1pin, OUTPUT);
 
   // Connect to your wi-fi modem
   WiFi.begin(ssid, password);
@@ -51,7 +51,7 @@ void setup() {
     Serial.print(".");
   }
   Serial.println("");
-  Serial.println("WiFi connected successfully");
+  Serial.println("WiFi connected");
   Serial.print("Got IP: ");
   Serial.println(WiFi.localIP());  //Show ESP32 IP on serial
 
@@ -73,20 +73,20 @@ void loop() {
   if (Serial2.available() > 0) {
     VAR = Serial2.read(); 
   }
-  suma = 4;
+  TOTAL = 4;
 
-  //Codigo para sumar la cantidad de parqueos disponibles
+  //Cantidad de parqueos Vacios
   if (1 & VAR) {
-    suma -= 1;
+    TOTAL -= 1;
   }
   if (2 & VAR) {
-    suma -= 1;
+    TOTAL -= 1;
   }
   if (4 & VAR) {
-    suma -= 1;
+    TOTAL -= 1;
   }
   if (8 & VAR) {
-    suma -= 1;
+    TOTAL -= 1;
   }
   
   server.handleClient();
@@ -110,7 +110,7 @@ String SendHTML2() {
   code += "  <head><meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1.0, user-scalable=no\\\">\n";
   code += "  <title>Parqueomatic</title>\n";
   code += "  <style>html { font-family: Helvetica; display: inline-block; margin: 0px auto; text-align: center;}\n";
-  code += "  body{margin-top: 50px;} h1 {color: #141C87;margin: 50px auto 30px;} h3 {color: #141C87;margin-bottom: 50px;}\n";
+  code += "  body{margin-top: 50px;} h1 {color: #1ac9c1;margin: 50px auto 30px;} h3 {color: #1ac9c1;margin-bottom: 50px;}\n";
   code += "  p {font-size: 14px;color: #888;margin-bottom: 10px;}\n";
   code += "  div {\n";
   code += "  width: 180px;\n";
@@ -124,7 +124,7 @@ String SendHTML2() {
   code += "  \n";
   code += "}\n";
   code += "table, th, td {\n";
-  code += "  border: 3px solid black;\n";
+  code += "  border: 3px white;\n";
   code += "  border-collapse: collapse;\n";
   code += "}\n";
   code += "th, td {\n";
@@ -132,7 +132,7 @@ String SendHTML2() {
   code += "  text-align: center;\n";
   code += "}\n";
   code += "#t01 td:nth-child(odd) {\n";
-  code += "  background-color: #FDF580;\n";
+  code += "  background-color: white;\n";
   code += "}\n";
   code += "#t01 th {\n";
   code += "  background-color: black;\n";
@@ -140,72 +140,70 @@ String SendHTML2() {
   code += "}\n";
   code += "  </style>\n";
 
-//Codigo para que la pagina se refresque cada 0.5 segundos
-code += "<script>\n";
-code += "<!--\n";
-code += "function timedRefresh(timeoutPeriod) {\n";
-code += "\tsetTimeout(\"location.reload(true);\",timeoutPeriod);\n";
-code += "}\n";
-code += "\n";
-code += "window.onload = timedRefresh(500);\n";
-code += "\n";
-code += "//   -->\n";
-code += "</script>";
+//refresh rate 0.5s
+  code += "<script>\n";
+  code += "<!--\n";
+  code += "function timedRefresh(timeoutPeriod) {\n";
+  code += "\tsetTimeout(\"location.reload(true);\",timeoutPeriod);\n";
+  code += "}\n";
+  code += "\n";
+  code += "window.onload = timedRefresh(500);\n";
+  code += "\n";
+  code += "//   -->\n";
+  code += "</script>";
 
-  //Codigo del visualizador principal de la pagina web
+//Codigo del visualizador principal de la pagina web
   code += "  </head>\n";
   code += "  <body>\n";
-  code += "  <h1>Parqueo-matic 3000 &#128664</h1>\n";
-  code += "  <h3>Santiago Fernandez 18171</h3>\n";
+  code += "  <h1>Parqueo-matic</h1>\n";
+  code += "  <h3>Francisco Lopez 17414</h3>\n";
   code += "  <table id=\"t01\" align=\"center\">\n";
+
+//Tabla
+
   code += "\t<tr>\n";
 
-//parqueo 1
-  code += "\t  <td> <h2> Parqueo 1 </h2></td>\n";
-  if ((VAR & 1) == 1) {
-    code += ocupado;
-  }
-  else {
-    code += disponible;
-  }
-  code += "\t</tr>\n";
-  code += "\t<tr>\n";
-
-//parqueo 2
+  code += "\t  <th><h2> Parqueo 1 </h2></th>\n";
   code += "\t  <td><h2> Parqueo 2 </h2></td>\n";
-  if ((VAR & 2) == 2) {
-    code += ocupado;
-  }
-  else {
-    code += disponible;
-  }
-
-  code += "\t</tr>\n";
-  code += "\t<tr>\n";
-
-//parqueo 3
-  code += "\t  <td><h2> Parqueo 3 </h2></td>\n";
-  if ((VAR & 4) == 4) {
-    code += ocupado;
-  }
-  else {
-    code += disponible;
-  }
-  code += "\t</tr>\n";
-  code += "\t<tr>\n";
-
-//parqueo 4
+  code += "\t  <th><h2> Parqueo 3 </h2></th>\n";
   code += "\t  <td><h2> Parqueo 4 </h2></td>\n";
-  if ((VAR & 8) == 8) {
-    code += ocupado;
+
+  code += "\t</tr>\n";
+  code += "\t<tr>\n";
+  
+  if ((VAR & 1) == 1) {
+    code += Ocupado;
   }
   else {
-    code += disponible;
+    code += Vacio;
   }
+
+  if ((VAR & 2) == 2) {
+    code += Ocupado;
+  }
+  else {
+    code += Vacio;
+  }
+
+  if ((VAR & 4) == 4) {
+    code += Ocupado;
+  }
+  else {
+    code += Vacio;
+  }
+
+  if ((VAR & 8) == 8) {
+    code += Ocupado;
+  }
+  else {
+    code += Vacio;
+  }
+  
   code += "\t</tr>\n";
+ 
   code += "  </table>\n";
-  code += "  <h2>Parqueos disponibles:</h2>\n";
-  code += "  <font size=7><span style=\"border: 3px solid black\">" + String(suma) + "</span></font>\n";
+  code += "  <h2>Parqueos Vacios:</h2>\n";
+  code += "  <font size=7><span style=\"border: 3px warning\">" + String(TOTAL) + "</span></font>\n";
   code += "\t</body>\n";
   code += "    </html>";
   return code;
