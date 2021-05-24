@@ -132,7 +132,7 @@ String SendHTML2() {
   code += "  text-align: center;\n";
   code += "}\n";
   code += "#t01 td:nth-child(odd) {\n";
-  code += "  background-color: white;\n";
+  code += "  background-color: #552df7;\n";
   code += "}\n";
   code += "#t01 th {\n";
   code += "  background-color: black;\n";
