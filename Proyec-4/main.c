@@ -58,9 +58,10 @@ void main(void)
     GPIOPinTypeGPIOOutput(GPIO_PORTD_BASE, GPIO_PIN_2|GPIO_PIN_3);
 
     //Entrada push butons
+
     GPIOPinTypeGPIOInput(GPIO_PORTD_BASE, GPIO_PIN_7);
     GPIOPinTypeGPIOInput(GPIO_PORTF_BASE, GPIO_PIN_4);
-    GPIOPinTypeGPIOInput(GPIO_PORTA_BASE, GPIO_PIN_2|GPIO_PIN_3);
+    GPIOPinTypeGPIOInput(GPIO_PORTA_BASE, GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4);
 
     //Iniciar UART
     UART1config();
@@ -70,7 +71,8 @@ void main(void)
     while(1){
 
         //leer entradas
-        PARQ1 = GPIOPinRead(GPIO_PORTD_BASE, GPIO_PIN_7);
+
+        PARQ1 = GPIOPinRead(GPIO_PORTA_BASE, GPIO_PIN_4);
         PARQ2 = GPIOPinRead(GPIO_PORTF_BASE, GPIO_PIN_4);
         PARQ3 = GPIOPinRead(GPIO_PORTA_BASE, GPIO_PIN_2);
         PARQ4 = GPIOPinRead(GPIO_PORTA_BASE, GPIO_PIN_3);
@@ -90,7 +92,7 @@ void main(void)
         //Parqueo 2
         //Ocupado
         if (PARQ2 == 0){
-            GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_5|GPIO_PIN_6, 16); //led roja
+            GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_5|GPIO_PIN_6, 32); //led roja
             VAR |= 2;   //Set del bit 1
         }
         //Disponible
