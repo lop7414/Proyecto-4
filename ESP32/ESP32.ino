@@ -3,7 +3,6 @@
   Ejemplo de creación de Web server
   Basándose en los ejemplos de:
   https://lastminuteengineers.com/creating-esp32-web-server-arduino-ide/
-  https://electropeak.com/learn
 **************************************************************************************************/
 
 //************************************************************************************************
@@ -73,20 +72,20 @@ void loop() {
   if (Serial2.available() > 0) {
     VAR = Serial2.read(); 
   }
-  TOTAL = 4;
+  TOTAL = 0;
 
   //Cantidad de parqueos Vacios
   if (1 & VAR) {
-    TOTAL -= 1;
+    TOTAL += 1;
   }
   if (2 & VAR) {
-    TOTAL -= 1;
+    TOTAL += 1;
   }
   if (4 & VAR) {
-    TOTAL -= 1;
+    TOTAL += 1;
   }
   if (8 & VAR) {
-    TOTAL -= 1;
+    TOTAL += 1;
   }
   
   server.handleClient();
@@ -172,31 +171,31 @@ String SendHTML2() {
   code += "\t<tr>\n";
   
   if ((VAR & 1) == 1) {
-    code += Ocupado;
+    code += Vacio;
   }
   else {
-    code += Vacio;
+    code += Ocupado;
   }
 
   if ((VAR & 2) == 2) {
-    code += Ocupado;
+    code += Vacio;
   }
   else {
-    code += Vacio;
+    code += Ocupado;
   }
 
   if ((VAR & 4) == 4) {
-    code += Ocupado;
+    code += Vacio;
   }
   else {
-    code += Vacio;
+    code += Ocupado;
   }
 
   if ((VAR & 8) == 8) {
-    code += Ocupado;
+    code += Vacio;
   }
   else {
-    code += Vacio;
+    code += Ocupado;
   }
   
   code += "\t</tr>\n";
